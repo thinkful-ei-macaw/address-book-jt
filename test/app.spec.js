@@ -13,7 +13,7 @@ describe('App', () => {
         });
     });
 
-    describe.only('POST /address', () => {
+    describe('POST /address', () => {
       it('should send Invalid Authorization method when Bearer token missing', () => {
         return supertest(app).post('/address').expect(400);
       });

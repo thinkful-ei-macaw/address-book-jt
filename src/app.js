@@ -76,7 +76,32 @@ app.post('/address', (req, res) => {
     return res.status(400).send('Zip is required');
   }
 
-  res.status(200).end();
+  if (state.length !== 2) {
+    return res.status(400).send('Must use 2 digit state code');
+  }
+
+  if (zip.length !== 5) {
+    return res.status(400).send('Must use 5 digit zip code');
+  }
+
+  const id = uuid();
+  const newAddress = {
+    id,
+    firstName,
+    lastName,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+  };
+
+  ADDRESS_BOOK.push(newAddress);
+
+  res
+    .status(201)
+    .location(`https://localhost:8000/${id}`)
+    .send('Address created');
 });
 
 app.use(function errorHandler(error, req, res, next) {
