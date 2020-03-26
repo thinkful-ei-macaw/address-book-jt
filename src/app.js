@@ -15,6 +15,20 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
+function validateBearer(req, res, next) {
+  const API_KEY = process.env.API_KEY;
+  const auth_token = req.get('Authorization');
+  if (auth_token && !auth_token.toLowerCase().startsWith('bearer')) {
+    return res
+      .status(400)
+      .json({ error: 'Invalid Autorization Method: Must use Bearer Strategy' });
+  }
+  if (!auth_token || auth_token.split(' ')[1] !== API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized request' });
+  }
+  next();
+}
+
 const ADDRESS_BOOK = [
   {
     id: 'aa1c572a-6f93-11ea-bc55-0242ac130003',
@@ -41,7 +55,7 @@ app.get('/address', (req, res) => {
   res.status(200).json(ADDRESS_BOOK);
 });
 
-app.post('/address', (req, res) => {
+app.post('/address', validateBearer, (req, res) => {
   const {
     firstName,
     lastName,
@@ -102,6 +116,14 @@ app.post('/address', (req, res) => {
     .status(201)
     .location(`https://localhost:8000/${id}`)
     .send('Address created');
+});
+
+app.delete('/address/:id', validateBearer, (req, res) => {
+  const indexOfAddress = ADDRESS_BOOK.findIndex(
+    (address) => address.id === req.params.id,
+  );
+  ADDRESS_BOOK.splice(indexOfAddress, 1);
+  res.status(204).end();
 });
 
 app.use(function errorHandler(error, req, res, next) {
