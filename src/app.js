@@ -38,7 +38,7 @@ const ADDRESS_BOOK = [
     address2: '3',
     city: 'East Greenbush',
     state: 'NY',
-    zip: '12219',
+    zip: '12219'
   },
   {
     id: 'b6a9791e-6f93-11ea-bc55-0242ac130003',
@@ -47,8 +47,8 @@ const ADDRESS_BOOK = [
     address1: '99 Thrush Terrace',
     city: 'East Greenbush',
     state: 'NY',
-    zip: '12219',
-  },
+    zip: '12219'
+  }
 ];
 
 app.get('/address', (req, res) => {
@@ -63,7 +63,7 @@ app.post('/address', validateBearer, (req, res) => {
     address2,
     city,
     state,
-    zip,
+    zip
   } = req.body;
 
   if (!firstName) {
@@ -107,7 +107,7 @@ app.post('/address', validateBearer, (req, res) => {
     address2,
     city,
     state,
-    zip,
+    zip
   };
 
   ADDRESS_BOOK.push(newAddress);
@@ -120,7 +120,7 @@ app.post('/address', validateBearer, (req, res) => {
 
 app.delete('/address/:id', validateBearer, (req, res) => {
   const indexOfAddress = ADDRESS_BOOK.findIndex(
-    (address) => address.id === req.params.id,
+    address => address.id === req.params.id
   );
   ADDRESS_BOOK.splice(indexOfAddress, 1);
   res.status(204).end();

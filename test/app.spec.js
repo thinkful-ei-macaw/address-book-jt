@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const app = require('../src/app');
 
-
 describe('App', () => {
   describe('/address route', () => {
     it('fetches all addresses on GET /address', () => {
@@ -18,11 +17,17 @@ describe('App', () => {
 
     describe('POST /address', () => {
       it('should send Invalid Authorization method when Bearer token missing', () => {
-        return supertest(app).post('/address').set('Authorization', 'invalid ' + process.env.API_KEY).expect(400);
+        return supertest(app)
+          .post('/address')
+          .set('Authorization', 'invalid ' + process.env.API_KEY)
+          .expect(400);
       });
 
       it('should send back error Unauthorized when auth token is incorrect', () => {
-        return supertest(app).post('/address').set('Authorization', 'bearer ' + 'invalid key').expect(401);
+        return supertest(app)
+          .post('/address')
+          .set('Authorization', 'bearer ' + 'invalid key')
+          .expect(401);
       });
 
       it('creates a new address when fully formed', () => {
@@ -78,7 +83,11 @@ describe('App', () => {
       requiredFields.forEach((field) => {
         it(`sends back an error if required field ${field} is missing`, () => {
           testAddress[field] = '';
-          return supertest(app).post('/address').set('Authorization', 'bearer ' + process.env.API_KEY).send(testAddress).expect(400);
+          return supertest(app)
+            .post('/address')
+            .set('Authorization', 'bearer ' + process.env.API_KEY)
+            .send(testAddress)
+            .expect(400);
         });
       });
 
@@ -95,13 +104,20 @@ describe('App', () => {
 
       it('sends back an error if the zip is not exactly five digits', () => {
         const addressBadZip = Object.assign(testAddress, { zip: 54309867 });
-        return supertest(app).post('/address').set('Authorization', 'bearer ' + process.env.API_KEY).send(addressBadZip).expect(400);
+        return supertest(app)
+          .post('/address')
+          .set('Authorization', 'bearer ' + process.env.API_KEY)
+          .send(addressBadZip)
+          .expect(400);
       });
     });
 
     describe('DELETE /address', () => {
       it('DETELE /address/:id successfully deletes a valid id', () => {
-        return supertest(app).delete('/address/:aa1c572a-6f93-11ea-bc55-0242ac130003').set('Authorization', 'bearer ' + process.env.API_KEY).expect(204);
+        return supertest(app)
+          .delete('/address/:aa1c572a-6f93-11ea-bc55-0242ac130003')
+          .set('Authorization', 'bearer ' + process.env.API_KEY)
+          .expect(204);
       });
     });
   });
