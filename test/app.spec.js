@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const app = require('../src/app');
 
 describe('App', () => {
@@ -9,7 +7,7 @@ describe('App', () => {
         .get('/address')
         .expect(200)
         .expect('Content-Type', /json/)
-        .then((res) => {
+        .then(res => {
           expect(res.body).to.be.an('array');
           expect(res.body[0]).to.be.an('object');
         });
@@ -41,7 +39,7 @@ describe('App', () => {
             address2: 'apt 3',
             city: 'Louisville',
             state: 'KY',
-            zip: '90129',
+            zip: '90129'
           })
           .expect(201, 'Address created');
       });
@@ -57,7 +55,7 @@ describe('App', () => {
             address2: ' ',
             city: 'Louisville',
             state: 'KY',
-            zip: '90129',
+            zip: '90129'
           })
           .expect(201, 'Address created');
       });
@@ -68,7 +66,7 @@ describe('App', () => {
         'address1',
         'city',
         'state',
-        'zip',
+        'zip'
       ];
 
       const testAddress = {
@@ -77,10 +75,10 @@ describe('App', () => {
         address1: '38 Bucket Road',
         city: 'Louisville',
         state: 'KY',
-        zip: '90129',
+        zip: '90129'
       };
 
-      requiredFields.forEach((field) => {
+      requiredFields.forEach(field => {
         it(`sends back an error if required field ${field} is missing`, () => {
           testAddress[field] = '';
           return supertest(app)
@@ -93,7 +91,7 @@ describe('App', () => {
 
       it('sends back an error if the state is more than 2 characters', () => {
         const addressBadState = Object.assign(testAddress, {
-          state: 'Kentucky',
+          state: 'Kentucky'
         });
         return supertest(app)
           .post('/address')
