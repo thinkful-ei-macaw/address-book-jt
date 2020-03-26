@@ -13,14 +13,9 @@ describe('App', () => {
         });
     });
 
-    describe('POST /address', () => {
+    describe.only('POST /address', () => {
       it('should send Invalid Authorization method when Bearer token missing', () => {
-        return supertest(app)
-          .post('/address')
-          .expect(
-            400,
-            'Invalid Authorization method: Must use Bearer strategy',
-          );
+        return supertest(app).post('/address').expect(400);
       });
 
       it('should send back error Unauthorized when auth token is incorrect', () => {
@@ -70,7 +65,6 @@ describe('App', () => {
         firstName: 'John',
         lastName: 'Hamm',
         address1: '38 Bucket Road',
-        address2, //eslint-disable-line no-undef
         city: 'Louisville',
         state: 'KY',
         zip: '90129',
@@ -79,7 +73,7 @@ describe('App', () => {
       requiredFields.forEach((field) => {
         it(`sends back an error if required field ${field} is missing`, () => {
           testAddress[field] = '';
-          return supertest(app).post(testAddress).expect(400);
+          return supertest(app).post('/address').send(testAddress).expect(400);
         });
       });
 
@@ -87,12 +81,15 @@ describe('App', () => {
         const addressBadState = Object.assign(testAddress, {
           state: 'Kentucky',
         });
-        return supertest(app).post(addressBadState).expect(400);
+        return supertest(app)
+          .post('/address')
+          .send(addressBadState)
+          .expect(400);
       });
 
       it('sends back an error if the zip is not exactly five digits', () => {
         const addressBadZip = Object.assign(testAddress, { zip: 54309867 });
-        return supertest(app).post(addressBadZip).expect(400);
+        return supertest(app).post('/address').send(addressBadZip).expect(400);
       });
     });
 

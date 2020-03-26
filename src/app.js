@@ -11,13 +11,72 @@ const app = express();
 const morganOption = NODE_ENV === 'production' ? 'tiny' : 'common';
 
 app.use(morgan(morganOption));
+app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
-const ADDRESS_BOOK = [];
+const ADDRESS_BOOK = [
+  {
+    id: 'aa1c572a-6f93-11ea-bc55-0242ac130003',
+    firstName: 'Bob',
+    lastName: 'Shmeee',
+    address1: '32 Dreary Lane',
+    address2: '3',
+    city: 'East Greenbush',
+    state: 'NY',
+    zip: '12219',
+  },
+  {
+    id: 'b6a9791e-6f93-11ea-bc55-0242ac130003',
+    firstName: 'Nancy',
+    lastName: 'Smith',
+    address1: '99 Thrush Terrace',
+    city: 'East Greenbush',
+    state: 'NY',
+    zip: '12219',
+  },
+];
 
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
+app.get('/address', (req, res) => {
+  res.status(200).json(ADDRESS_BOOK);
+});
+
+app.post('/address', (req, res) => {
+  const {
+    firstName,
+    lastName,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+  } = req.body;
+
+  if (!firstName) {
+    return res.status(400).send('First name required');
+  }
+
+  if (!lastName) {
+    return res.status(400).send('Last name required');
+  }
+
+  if (!address1) {
+    return res.status(400).send('Address is required');
+  }
+
+  if (!city) {
+    return res.status(400).send('City is required');
+  }
+
+  if (!state) {
+    return res.status(400).send('State is required');
+  }
+
+  if (!zip) {
+    return res.status(400).send('Zip is required');
+  }
+
+  res.status(200).end();
 });
 
 app.use(function errorHandler(error, req, res, next) {
